@@ -1,0 +1,40 @@
+services:
+
+  app:
+    build: .
+    container_name: statuspulse-app
+
+    ports:
+      - "8000:8000"
+
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: statuspulse
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:15
+    container_name: statuspulse-db
+
+    environment:
+      POSTGRES_DB: statuspulse
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7
+    container_name: statuspulse-redis
+
+    ports:
+      - "6379:6379"
