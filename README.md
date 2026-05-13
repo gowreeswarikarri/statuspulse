@@ -2,7 +2,7 @@
 
 ## Live URLs
 
-API:
+Production API:
 https://54.158.88.185.nip.io
 
 Swagger Docs:
@@ -14,6 +14,11 @@ https://54.158.88.185.nip.io/health
 Monitoring Dashboard:
 http://54.158.88.185:3001
 
+Public Status Page:
+http://54.158.88.185:3001/status/statuspulse
+
+---
+
 ## Features
 
 - Dockerized FastAPI application
@@ -23,7 +28,11 @@ http://54.158.88.185:3001
 - Automated deployment to AWS EC2
 - HTTPS enabled using Caddy
 - Uptime Kuma monitoring
+- Discord alert notifications
 - Health checks and integration tests
+- Firewall and SSH hardening
+
+---
 
 ## Tech Stack
 
@@ -36,3 +45,13 @@ http://54.158.88.185:3001
 - AWS EC2
 - Caddy
 - Uptime Kuma
+- Discord Webhooks
+
+---
+
+## Local Run
+
+```bash
+make build
+make up
+make test
