@@ -37,6 +37,16 @@ jobs:
       - name: Lint Dockerfile
         run: hadolint Dockerfile
 
+      - name: Create .env File
+        run: |
+          echo "DB_HOST=postgres" >> .env
+          echo "DB_PORT=5432" >> .env
+          echo "DB_NAME=statuspulse" >> .env
+          echo "DB_USER=postgres" >> .env
+          echo "DB_PASSWORD=change_me" >> .env
+          echo "REDIS_HOST=redis" >> .env
+          echo "REDIS_PORT=6379" >> .env
+
       - name: Build Docker Containers
         run: docker compose build
 
@@ -47,7 +57,9 @@ jobs:
         run: sleep 20
 
       - name: Run Integration Tests
-        run: chmod +x tests/test_integration.sh && ./tests/test_integration.sh
+        run: |
+          chmod +x tests/test_integration.sh
+          ./tests/test_integration.sh
 
       - name: Show Logs if Failed
         if: failure()
