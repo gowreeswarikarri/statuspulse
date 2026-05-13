@@ -1,0 +1,57 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Ruff
+        run: pip install ruff
+
+      - name: Run Ruff Linter
+        run: ruff check app/
+
+      - name: Install Hadolint
+        run: |
+          wget -O /usr/local/bin/hadolint \
+          https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
+          chmod +x /usr/local/bin/hadolint
+
+      - name: Lint Dockerfile
+        run: hadolint Dockerfile
+
+      - name: Build Docker Containers
+        run: docker compose build
+
+      - name: Start Containers
+        run: docker compose up -d
+
+      - name: Wait for App
+        run: sleep 20
+
+      - name: Run Integration Tests
+        run: chmod +x tests/test_integration.sh && ./tests/test_integration.sh
+
+      - name: Show Logs if Failed
+        if: failure()
+        run: docker compose logs
+
+      - name: Stop Containers
+        run: docker compose down
