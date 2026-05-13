@@ -50,6 +50,8 @@ jobs:
               --env-file ~/statuspulse/.env \
               ghcr.io/gowreeswarikarri/statuspulse:latest
 
-            sleep 15
+            docker logs statuspulse-app
+
+            sleep 40
 
             curl -f http://localhost:8000/health
