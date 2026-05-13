@@ -1,0 +1,60 @@
+---
+- name: Configure StatusPulse Server
+  hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Install Docker Compose
+      apt:
+        name: docker-compose
+        state: present
+
+    - name: Enable Docker service
+      service:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Allow SSH
+      ufw:
+        rule: allow
+        port: '22'
+        proto: tcp
+
+    - name: Allow HTTP
+      ufw:
+        rule: allow
+        port: '80'
+        proto: tcp
+
+    - name: Allow HTTPS
+      ufw:
+        rule: allow
+        port: '443'
+        proto: tcp
+
+    - name: Enable firewall
+      ufw:
+        state: enabled
+
+    - name: Create project directory
+      file:
+        path: /home/ubuntu/statuspulse
+        state: directory
+
+    - name: Copy project files
+      copy:
+        src: ../
+        dest: /home/ubuntu/statuspulse
+
+    - name: Start containers
+      shell: |
+        cd /home/ubuntu/statuspulse
+        docker compose up -d --build
